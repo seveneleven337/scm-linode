@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+  front-end:
+    build:
+      context: SCM-Simulator
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    links:
+      - back-end
+    networks:
+      - scm
+
+  back-end:
+    build:
+      context: server-SCM
+      dockerfile: Dockerfile
+    ports:
+      - "8075:8080"
+    links:
+      - mariaDb
+    networks:
+      - scm
+
+  mariaDb:
+    image: mariadb:latest
+    container_name: SCM-mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: holaMundo
+      MARIADB_DATABASE: e2001875_SCM
+      MARIADB_USER: e2001875
+      MARIADB_PASSWORD: holaMundo
+    ports:
+      - "3306:3306"
+    volumes:
+      - type: bind
+        source: ./database
+        target: /var/lib/mysql
+    networks:
+      - scm
+
+networks:
+  scm:
